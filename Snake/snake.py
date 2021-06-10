@@ -159,7 +159,8 @@ class Ventana:
             
             time.sleep(posponer)   
 
-if __name__ == "__main__":
-    window = turtle
-    Ventana(window)
-    window.mainloop()
+def run():
+    if __name__ == "__main__":
+        window = turtle
+        Ventana(window)
+        window.mainloop()
