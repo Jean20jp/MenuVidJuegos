@@ -50,8 +50,8 @@ ball.shape("square")
 ball.color("white")
 ball.penup()
 ball.goto(0, 0)
-ball.dx = 1
-ball.dy = 1
+ball.dx = 0.2
+ball.dy = 0.2
 static = True
 
 #MARCADOR INICIAL
@@ -109,7 +109,7 @@ def paddle_b_down():
 
 #REPRODUCCIÓN DE SONIDO
 def play_sound():
-    playsound("pong.mp3")
+    playsound("soundgame.mp3")
 
 #INICAR TAREA EN SEGUNDO PLANO
 def init_playsoun():
