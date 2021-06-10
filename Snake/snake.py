@@ -164,3 +164,5 @@ def run():
         window = turtle
         Ventana(window)
         window.mainloop()
+
+run()
