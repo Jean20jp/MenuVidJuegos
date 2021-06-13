@@ -1,191 +1,222 @@
-import turtle
-import threading
-import time
-from playsound import playsound
 
 
+import pygame
 
-#ÁREA DE JUEGO.
-wn = turtle.Screen()
-wn.title("Pong")
-wn.bgcolor("#A9A9A9")
-wn.setup(width=800, height=600)
-wn.tracer(0)
+pygame.font.init()
 
-#MARCADOR
-score_a = 0
-score_b = 0
+ALTURA = 600
+ANCHO = 1000
+PANTALLA_ALTURA = 800
+PANTALLA_ANCHO = 1200
+NEGRO = (0, 0, 0)
+BLANCO = (255, 255, 255)
+ROJO = (255, 0, 0)
+GRIS = (128, 128, 128)
+AZUL = (0, 0, 255)
 
-#PALA A
-paddle_a = turtle.Turtle()
-paddle_a.speed(0)
-paddle_a.shape("square")
-paddle_a.color("white")
-paddle_a.shapesize(stretch_wid=5, stretch_len=1)
-paddle_a.penup()
-paddle_a.goto(-350, 0)
+win = pygame.display.set_mode((PANTALLA_ANCHO, PANTALLA_ALTURA))
+win.fill(GRIS)
+pygame.display.set_caption("Pong")
 
-#PALA B
-paddle_b = turtle.Turtle()
-paddle_b.speed(0)
-paddle_b.shape("square")
-paddle_b.color("white")
-paddle_b.shapesize(stretch_wid=5, stretch_len=1)
-paddle_b.penup()
-paddle_b.goto(350, 0)
+class Bloque():
+    def __init__(self, x, y, ancho, altura, color):
+        self.x = x
+        self.y = y
+        self.ancho = ancho
+        self.altura = altura
+        self.color = color
+        self.rect = (x, y, ancho, altura)
+        self.mov = 8
+    
+    def dibujar(self, ventana):
+        pygame.draw.rect(ventana, self.color, self.rect)
+    
+    def mover(self, bloque, superior, inferior):
 
-#LINEA DIVISORIA
-line = turtle.Turtle()
-line.speed(0)
-line.shape("square")
-line.color("gray")
-line.shapesize(stretch_wid=30, stretch_len=0.07)
-line.penup()
-line.goto(0, 0)
+        teclas = pygame.key.get_pressed()# 0 - 1
+        # [a=0, b=1, c, ...]
+        if bloque == 2:
+            if teclas[pygame.K_UP]:
+                self.y -= self.mov# self.y = self.y - self.mov
+                if self.y <= superior:
+                    self.y += self.mov
+            
+            if teclas[pygame.K_DOWN]:
+                self.y += self.mov# self.y = self.y +self.mov
+                if self.y + self.altura >= inferior:
+                    self.y -= self.mov
+                
+        if bloque == 1:
+            if teclas[pygame.K_w]:
+                self.y -= self.mov# self.y = self.y - self.mov
+                if self.y <= superior:
+                    self.y += self.mov
+            
+            if teclas[pygame.K_s]:
+                self.y += self.mov# self.y = self.y +self.mov
+                if self.y + self.altura >= inferior:
+                    self.y -= self.mov
+            
+        
+        self.actualizar()
+        
+    def actualizar(self):
+        self.rect = (self.x, self.y, self.ancho, self.altura)
 
-#PELOTA
-ball = turtle.Turtle()
-ball.speed(0)
-ball.shape("square")
-ball.color("white")
-ball.penup()
-ball.goto(0, 0)
-ball.dx = 0.2
-ball.dy = 0.2
-static = True
+class Bola():
+    def __init__(self, x, y, radio, color):
+        self.x = x
+        self.initx = x
+        self.y = y
+        self.inity = y
+        self.radio = radio
+        self.color = color
+        self.centro = (x, y)
+        self.movx = 8
+        self.movy = 8
+        self.golpear1 = False
+        self.golpear2 = False
+        
+    def dibujar(self, ventana):
+        pygame.draw.circle(ventana, self.color, self.centro, self.radio)
+        # Enteros(Integer) - 0, 15, -22
+        # Flotantes(Float) - 15.2, 3.7, 1.0
+    
+    def mover(self, superior, inferior, izq, der, bloque_1, bloque_2):
+        self.x += self.movx # self.x = self.x + self.movx
+        self.y += self.movy
+        
+        if self.y - self.radio <= superior:
+            self.movy *= -1
+        
+        if self.y + self.radio >= inferior:
+            self.movy *= -1
+        
+        if self.x - self.radio <= izq:
+            self.x = self.initx
+            self.y = self.inity
+            self.reset()
+            self.movx *= -1
+            return 2
+            
+        if self.x + self.radio >= der:
+            self.x = self.initx
+            self.y = self.inity
+            self.reset()
+            self.movx *= -1
+            return 1
+        
+        if bloque_2.x + bloque_2.ancho >= self.x + self.radio >= bloque_2.x:
+            if bloque_2.y + bloque_2.altura >= self.y + self.radio >= bloque_2.y:
+                if not self.golpear2:
+                    self.movx *= -1
+                    self.golpear2 = True
+                    self.golpear1 = False
+                
+        if bloque_1.x <= self.x - self.radio <= bloque_1.x + bloque_1.ancho:
+            if bloque_1.y + bloque_1.altura >= self.y + self.radio >= bloque_1.y:
+                if not self.golpear1:
+                    self.movx *= -1
+                    self.golpear1 = True
+                    self.golpear2 = False
+            
+                
+        self.actualizar()
+    
+    def actualizar(self):
+        self.centro = (self.x, self.y)
+    
+    def reset(self):
+        self.golpear2 = False
+        self.golpear1 = False
 
-#MARCADOR INICIAL
-pen = turtle.Turtle()
-pen.speed(0)
-pen.color("white")
-pen.penup()
-pen.hideturtle()
-pen.goto(-2.5, 220)
-pen.write("0       0",align="center", font=("Fixedsys", 60, "bold"))
+#Funciones
 
-#MENSAJE "ENTER".
-pen2 = turtle.Turtle()
-pen2.speed(0)
-pen2.color("black")
-pen2.penup()
-pen2.hideturtle()
-pen2.goto(0, 120)
-pen2.write("Presione la Tecla Enter",align="center", font=("Fixedsys", 24, "bold"))
+def ganador(ventana, Jugador):
+    fuente = pygame.font.SysFont("Arial", 100, True)
+    texto = "Gano el jugador " + str(Jugador) + "!"
+    escribir = fuente.render(texto, 1, ROJO)
+    ventana.blit(escribir, (PANTALLA_ANCHO/2-escribir.get_width()/2, PANTALLA_ALTURA/2- escribir.get_height()/2))
+    pygame.display.update()
+    
 
+def dibujarpuntaje(ventana, puntaje_1, puntaje_2):
+    fuente = pygame.font.SysFont("Arial", 50, True)
+    texto = "Jugador 1: " + str(puntaje_1) + "      Jugador 2: " + str(puntaje_2)
+    escribir = fuente.render(texto, 1, AZUL)
+    ventana.blit(escribir, (PANTALLA_ANCHO/2-escribir.get_width()/2, 20))
 
-#ACTUALIZA MARCADOR.
-def update_score():
-    pen.clear()
-    pen.write("{}       {}".format(score_a,score_b),
-    align="center", font=("Fixedsys", 60, "bold"))  
+def redibujarventana(ventana, bloque_1, bloque_2, bola, puntaje_1, puntaje_2):
+    ventana.fill(GRIS)
+    pygame.draw.rect(ventana, NEGRO, ((PANTALLA_ANCHO-ANCHO)/2, (PANTALLA_ALTURA-ALTURA)/2, ANCHO, ALTURA))
+    bloque_1.dibujar(ventana)
+    bloque_2.dibujar(ventana)
+    bola.dibujar(ventana)
+    dibujarpuntaje(ventana, puntaje_1, puntaje_2)
+    pygame.display.update()
 
-#MOVER PALA "A" HACIA ARRIBA
-def paddle_a_up():
-    y = paddle_a.ycor()
-    if y <= 240:
-        y += 20
-        paddle_a.sety(y)
+def principal():
+    puntaje_1 = 0
+    puntaje_2 = 0
+    bandera = True
+    reloj = pygame.time.Clock()
+    
+    #Objetos
+    bloque_1 = Bloque(ANCHO/10+(PANTALLA_ANCHO-ANCHO)/2, PANTALLA_ALTURA/2-75, ANCHO/40, 150, BLANCO)
+    bloque_2 = Bloque(PANTALLA_ANCHO-(PANTALLA_ANCHO-ANCHO)/2-(ANCHO/10+ANCHO/40), PANTALLA_ALTURA/2-75, ANCHO/40, 150, BLANCO)
+    bola = Bola(int(round(PANTALLA_ANCHO/2)), int(round(PANTALLA_ALTURA/2)), int(round(ANCHO/50)), BLANCO)
+    
+    redibujarventana(win, bloque_1, bloque_2, bola, puntaje_1, puntaje_2)
+    
+    pygame.time.delay(500)
+    
+    while bandera:
+        pygame.time.delay(50)# 1s - 1000ms
+        reloj.tick(60)#FPS
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                bandera = False
+                pygame.quit()
+                
+        bloque_1.mover(1, (PANTALLA_ALTURA-ALTURA)/2, PANTALLA_ALTURA-(PANTALLA_ALTURA-ALTURA)/2)
+        bloque_2.mover(2, (PANTALLA_ALTURA-ALTURA)/2, PANTALLA_ALTURA-(PANTALLA_ALTURA-ALTURA)/2)
+        punto = bola.mover((PANTALLA_ALTURA-ALTURA)/2, PANTALLA_ALTURA-(PANTALLA_ALTURA-ALTURA)/2, (PANTALLA_ANCHO-ANCHO)/2, PANTALLA_ANCHO-(PANTALLA_ANCHO-ANCHO)/2, bloque_1, bloque_2)
+        
+        if punto == 1:
+            puntaje_1 += 1
+        elif punto == 2:
+            puntaje_2 += 1
+                
+        redibujarventana(win, bloque_1, bloque_2, bola, puntaje_1, puntaje_2)
+        
+        if puntaje_1 == 5:
+            ganador(win, 1)
+            pygame.time.delay(2000)
+            bandera = False
+        elif puntaje_2 == 5:
+            ganador(win, 2)
+            pygame.time.delay(2000)
+            bandera = False
 
-#MOVER PALA "A" HACIA ABAJO
-def paddle_a_down():
-    y = paddle_a.ycor()
-    if y >= -220:
-        y -= 20
-        paddle_a.sety(y)
-
-#MOVER PARA "B" HACIA ARRIBA
-def paddle_b_up():
-    y = paddle_b.ycor()
-    if y <= 240:
-        y += 20
-        paddle_b.sety(y)
-
-#MOVER PALA "B" HACIA ABAJO
-def paddle_b_down():
-    y = paddle_b.ycor()
-    if y >= -220:
-        y -= 20
-        paddle_b.sety(y)
-
-#REPRODUCCIÓN DE SONIDO
-def play_sound():
-    playsound("soundgame.mp3")
-
-#INICAR TAREA EN SEGUNDO PLANO
-def init_playsoun():
-    t = threading.Thread(target=play_sound)
-    t.start()
-
-#INICIAR JUEGO    
-def init_game():
-    global static
-    static = False
-    pen2.clear()
-
-#RESTAURAR PANTALLA DE INICIO
-def reset_screen():
-    ball.goto(0, 0)
-    ball.dx *= -1    
-    pen2.write("PRESS ENTER TO START",
-    align="center", font=("Fixedsys", 24, "bold"))
-    paddle_a.goto(-350, 0)
-    paddle_b.goto(350, 0)
-
-#REGISTRAR EVENTOS DE TECLADO.    
-wn.listen()
-wn.onkeypress(paddle_a_up, "w")
-wn.onkeypress(paddle_a_down, "s")
-wn.onkeypress(paddle_b_up, "Up")
-wn.onkeypress(paddle_b_down, "Down")
-wn.onkeypress(init_game, "Return")
-
-#DESARROLLO DEL JUEGO.
-while True:
-    try:
-        wn.update()
-        #MOVER PELOTA
-        if static == False:
-            ball.setx(ball.xcor() + ball.dx)
-            ball.sety(ball.ycor() + ball.dy)
-
-        #REBOTE EN EL MARGEN SUPERIOR.
-        if ball.ycor() > 290:
-            ball.sety(290)
-            ball.dy *= -1
-            init_playsoun()
-
-        #REBOTE EN EL MARGEN INFERIOR.
-        if ball.ycor() < -290:
-            ball.sety(-290)
-            ball.dy *= -1
-            init_playsoun()
-
-        #PELOTA SOBREPASA LA PALA B
-        if ball.xcor() > 390:
-            score_a += 1
-            update_score()
-            static = True
-            time.sleep(1)
-            reset_screen()
-
-        #PELOTA SOBREPASA LA PALA A
-        if ball.xcor() < -390:
-            score_b += 1
-            update_score()
-            static = True
-            time.sleep(1)
-            reset_screen()
-
-        #REBOTE EN LA PALA B.
-        if (ball.xcor() > 340 and ball.xcor() < 350) and (ball.ycor() < paddle_b.ycor() + 50 and ball.ycor() > paddle_b.ycor() - 50):
-            ball.setx(340)
-            ball.dx *= -1
-            init_playsoun()
-
-        #REBOTE EN LA PALA A
-        if (ball.xcor() < -340 and ball.xcor() > -350) and (ball.ycor() < paddle_a.ycor() + 50 and ball.ycor() > paddle_a.ycor() - 50):
-            ball.setx(-340)
-            ball.dx *= -1        
-            init_playsoun()
-    except:
-        break
+def menu():
+    win.fill(NEGRO)
+    fuente = pygame.font.SysFont("Arial", 100, True)
+    texto = "PRESIONE PARA JUGAR"
+    escribir = fuente.render(texto, 1, BLANCO)
+    win.blit(escribir, (PANTALLA_ANCHO/2-escribir.get_width()/2, PANTALLA_ALTURA/2- escribir.get_height()/2))
+    pygame.display.update()
+    
+    bandera = True
+    
+    while bandera:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                bandera = False
+                pygame.quit()
+            
+            if event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
+                principal()
+    
+    
+    
+menu()
