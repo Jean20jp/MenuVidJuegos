@@ -1,8 +1,14 @@
 from tkinter import *
+<<<<<<< HEAD
 #from tkinter import messagebox
 #from Snake.snake import *
 from SpaceDefenders.spaceDefenders import *
 
+=======
+#import tkinter as tk
+from Snake.snake import *
+#from SpaceDefenders.spaceDefenders import *
+>>>>>>> f9ad7551079c9d830b1beb80086f14a3bba5a197
 class Menu:
     def __init__(self, window):
         self.window = window
@@ -35,7 +41,8 @@ class Menu:
         self.btnSpaceDfds.place(x=100,y=255)
 
     def playSnake(self):
-        pass
+        runSnake()
+
     def playPong(self):
         pass
         
@@ -44,6 +51,11 @@ class Menu:
         runSpace()
         
 root = Tk() 
+<<<<<<< HEAD
 Menu(root)
 root.mainloop()     
+=======
+uiSystem = Menu(root)
+root.mainloop() 
+>>>>>>> f9ad7551079c9d830b1beb80086f14a3bba5a197
         
