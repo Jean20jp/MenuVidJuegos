@@ -1,6 +1,6 @@
 from tkinter import *
 #import tkinter as tk
-#from Snake.snake import *
+from Snake.snake import *
 #from SpaceDefenders.spaceDefenders import *
 class Menu:
     def __init__(self, window):
@@ -23,7 +23,7 @@ class Menu:
         self.headTitle = Label(self.window, text="Menu de Juegos", 
                     font=("time new roman",20,"bold"),fg="white",bg="#09088B")
         self.headTitle.place(x=245,y=25)
-        self.btnSnake = Button(self.frame,command= self.playSnake() ,text="   Snake   ",fg="black",
+        self.btnSnake = Button(self.frame,command= self.playSnake ,text="   Snake   ",fg="black",
                     bg="white", font=("times new roman", 15))
         self.btnSnake.place(x=147,y=65)
         self.btnPong = Button(self.frame,command= self.playPong() ,text="   Pong   ",fg="black",
@@ -34,7 +34,8 @@ class Menu:
         self.btnSpaceDfds.place(x=100,y=255)
 
     def playSnake(self):
-        pass
+        runSnake()
+
     def playPong(self):
         pass
         
@@ -43,5 +44,5 @@ class Menu:
 
 root = Tk() 
 uiSystem = Menu(root)
-root.mainloop()     
+root.mainloop() 
         
