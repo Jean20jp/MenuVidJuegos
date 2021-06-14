@@ -2,7 +2,6 @@ from tkinter import *
 #import tkinter as tk
 #from Snake.snake import *
 #from SpaceDefenders.spaceDefenders import *
-
 class Menu:
     def __init__(self, window):
         self.window = window
