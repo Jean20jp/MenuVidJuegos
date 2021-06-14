@@ -1,50 +1,42 @@
 import turtle
-import threading
 import time
-from playsound import playsound
-
 
 class PingPong:
     def __init__(self,ventana) :
         self.windows = ventana.Screen()
-        self.score_a = 0
-        self.score_b = 0
-        self.paddle_a = ventana.Turtle()
-        self.paddle_b = ventana.Turtle()
+        self.scoreA = 0
+        self.scoreB = 0
+        self.paddleA = ventana.Turtle()
+        self.paddleB = ventana.Turtle()
         self.line = ventana.Turtle()
         self.ball = ventana.Turtle()
         self.static = True
         self.pen = ventana.Turtle()
-        self.pen2 = ventana.Turtle()
-        #-------------
+        self.penEnter = ventana.Turtle()
+        
 
     def areaJuego(self):
-        wn = turtle.Screen()
         self.windows.title("Pong")
         self.windows.bgcolor("#A9A9A9")
         self.windows.setup(width=800, height=600)
         self.windows.tracer(0)
     
-    def palaA(self):
+    def playerA(self):
+        self.paddleA.speed(0)
+        self.paddleA.shape("square")
+        self.paddleA.color("white")
+        self.paddleA.shapesize(stretch_wid=5, stretch_len=1)
+        self.paddleA.penup()
+        self.paddleA.goto(-350, 0)
 
-
-        
-        #PALA A
-        self.paddle_a.speed(0)
-        self.paddle_a.shape("square")
-        self.paddle_a.color("white")
-        self.paddle_a.shapesize(stretch_wid=5, stretch_len=1)
-        self.paddle_a.penup()
-        self.paddle_a.goto(-350, 0)
-
-    def palaB(self):
+    def playerB(self):
         #PALA B
-        self.paddle_b.speed(0)
-        self.paddle_b.shape("square")
-        self.paddle_b.color("white")
-        self.paddle_b.shapesize(stretch_wid=5, stretch_len=1)
-        self.paddle_b.penup()
-        self.paddle_b.goto(350, 0)
+        self.paddleB.speed(0)
+        self.paddleB.shape("square")
+        self.paddleB.color("white")
+        self.paddleB.shapesize(stretch_wid=5, stretch_len=1)
+        self.paddleB.penup()
+        self.paddleB.goto(350, 0)
 
     def lineaMedio(self):
         #LINEA DIVISORIA
@@ -63,8 +55,8 @@ class PingPong:
         self.ball.color("white")
         self.ball.penup()
         self.ball.goto(0, 0)
-        self.ball.dx = 0.9
-        self.ball.dy = 0.9
+        self.ball.dx = 0.8
+        self.ball.dy = 0.8
         self.static = True      
 
     def marcadorInicial(self):
@@ -80,87 +72,76 @@ class PingPong:
     def marcadorEnter(self):
         #MENSAJE "ENTER".
         
-        self.pen2.speed(0)
-        self.pen2.color("black")
-        self.pen2.penup()
-        self.pen2.hideturtle()
-        self.pen2.goto(0, 120)
-        self.pen2.write("Presione la Tecla Enter",align="center", font=("Fixedsys", 24, "bold"))
+        self.penEnter.speed(0)
+        self.penEnter.color("black")
+        self.penEnter.penup()
+        self.penEnter.hideturtle()
+        self.penEnter.goto(0, 120)
+        self.penEnter.write("Presione la Tecla Enter",align="center", font=("Fixedsys", 24, "bold"))
     
-    def update_score(self):
+    def updateScore(self):
         #ACTUALIZA MARCADOR.
         self.pen.clear()
-        self.pen.write("{}       {}".format(self.score_a,self.score_b),
+        self.pen.write("{}       {}".format(self.scoreA,self.scoreB),
         align="center", font=("Fixedsys", 60, "bold"))  
 
-    def paddle_a_up(self):
+    def movePlayerAUP(self):
         #MOVER PALA "A" HACIA ARRIBA
-        y = self.paddle_a.ycor()
+        y = self.paddleA.ycor()
         if y <= 240:
             y += 20
-            self.paddle_a.sety(y)
+            self.paddleA.sety(y)
 
     
-    def paddle_a_down(self):
+    def movePlayerADown(self):
         #MOVER PALA "A" HACIA ABAJO
-        y = self.paddle_a.ycor()
+        y = self.paddleA.ycor()
         if y >= -220:
             y -= 20
-            self.paddle_a.sety(y)
+            self.paddleA.sety(y)
 
     
-    def paddle_b_up(self):
+    def movePlayerBUP(self):
         #MOVER PARA "B" HACIA ARRIBA
-        y = self.paddle_b.ycor()
+        y = self.paddleB.ycor()
         if y <= 240:
             y += 20
-            self.paddle_b.sety(y)
+            self.paddleB.sety(y)
 
     
-    def paddle_b_down(self):
+    def movePlayerBDown(self):
         #MOVER PALA "B" HACIA ABAJO
-        y = self.paddle_b.ycor()
+        y = self.paddleB.ycor()
         if y >= -220:
             y -= 20
-            self.paddle_b.sety(y)
+            self.paddleB.sety(y)
 
     
-    def play_sound(self):
-        #REPRODUCCIÓN DE SONIDO
-        playsound("pong.mp3")
-
-    
-    def init_playsoun(self):
-        #INICAR TAREA EN SEGUNDO PLANO
-        t = threading.Thread(target=self.play_sound)
-        t.start()
-
-       
-    def init_game(self):
+    def initGame(self):
         #INICIAR JUEGO 
         global static
         self.static = False
-        self.pen2.clear()
-
+        self.penEnter.clear()
     
-    def reset_screen(self):
+    
+    def resetScreen(self):
         #RESTAURAR PANTALLA DE INICIO
         self.ball.goto(0, 0)
         self.ball.dx *= -1    
-        self.pen2.write("PRESIONE LA TECLA ENTER PARA EMPEZAR",
+        self.penEnter.write("PRESIONE LA TECLA ENTER PARA EMPEZAR",
         align="center", font=("Fixedsys", 24, "bold"))
-        self.paddle_a.goto(-350, 0)
-        self.paddle_b.goto(350, 0)
+        self.paddleA.goto(-350, 0)
+        self.paddleB.goto(350, 0)
 
     def registroEventos(self):
 
         #REGISTRAR EVENTOS DE TECLADO.    
         self.windows.listen()
-        self.windows.onkeypress(self.paddle_a_up(), "w")
-        self.windows.onkeypress(self.paddle_a_down(), "s")
-        self.windows.onkeypress(self.paddle_b_up(), "Up")
-        self.windows.onkeypress(self.paddle_b_down(), "Down")
-        self.windows.onkeypress(self.init_game(), "Return")
+        self.windows.onkeypress(self.movePlayerAUP, "w")
+        self.windows.onkeypress(self.movePlayerADown, "s")
+        self.windows.onkeypress(self.movePlayerBUP, "Up")
+        self.windows.onkeypress(self.movePlayerBDown, "Down")
+        self.windows.onkeypress(self.initGame, "Return")
 
     def desarrolloJuego(self):
         #DESARROLLO DEL JUEGO.
@@ -176,65 +157,66 @@ class PingPong:
                 if self.ball.ycor() > 290:
                     self.ball.sety(290)
                     self.ball.dy *= -1
-                    self.init_playsoun()
 
                 #REBOTE EN EL MARGEN INFERIOR.
                 if self.ball.ycor() < -290:
                     self.ball.sety(-290)
                     self.ball.dy *= -1
-                    self.init_playsoun()
 
                 #PELOTA SOBREPASA LA PALA B
                 if self.ball.xcor() > 390:
                     self.score_a += 1
-                    self.update_score()
+                    self.updateScore()
                     self.static = True
                     time.sleep(1)
-                    self.reset_screen()
+                    self.resetScreen()
 
                 #PELOTA SOBREPASA LA PALA A
                 if self.ball.xcor() < -390:
                     self.score_b += 1
-                    self.update_score()
+                    self.updateScore()
                     self.static = True
                     time.sleep(1)
-                    self.reset_screen()
+                    self.resetScreen()
 
                 #REBOTE EN LA PALA B.
-                if (self.ball.xcor() > 340 and self.ball.xcor() < 350) and (self.ball.ycor() < self.paddle_b.ycor() + 50 and self.ball.ycor() > self.paddle_b.ycor() - 50):
+                if (self.ball.xcor() > 340 and self.ball.xcor() < 350) and (self.ball.ycor() < self.paddleB.ycor() + 50 and self.ball.ycor() > self.paddleB.ycor() - 50):
                     self.ball.setx(340)
                     self.ball.dx *= -1
-                    self.init_playsoun()
-
+                    
                 #REBOTE EN LA PALA A
-                if (self.ball.xcor() < -340 and self.ball.xcor() > -350) and (self.ball.ycor() < self.paddle_a.ycor() + 50 and self.ball.ycor() > self.paddle_a.ycor() - 50):
+                if (self.ball.xcor() < -340 and self.ball.xcor() > -350) and (self.ball.ycor() < self.paddleA.ycor() + 50 and self.ball.ycor() > self.paddleA.ycor() - 50):
                     self.ball.setx(-340)
                     self.ball.dx *= -1        
-                    self.init_playsoun()
+                    
             except:
                 break
     
     def correr(self):
         self.areaJuego()
-        self.palaA()
-        self.palaB()
+        self.playerA()
+        self.playerB()
         self.lineaMedio()
         self.pelota()
         self.marcadorInicial()
         self.marcadorEnter()
-        self.update_score()
-        self.paddle_a_up()
-        self.paddle_a_down()
-        self.paddle_b_up()
-        self.paddle_b_down()
-        #self.play_sound()
-        #self.init_playsoun()
-        self.init_game()
-        self.reset_screen()
+        #-------------------------
+        
+        #self.updateScore()
+        #self.movePlayerAUP()
+        #self.movePlayerADown()
+        #self.movePlayerBUP()
+        #self.movePlayerBDown()
+        #--------------------------
+        
+        #self.initGame()
+        #self.resetScreen()
+        #-------------------------
+        
         self.registroEventos()
         self.desarrolloJuego()
         
-#---------------------
+        
 windows = turtle
 juego = PingPong(windows)
 juego.correr()
