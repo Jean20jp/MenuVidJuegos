@@ -1,7 +1,7 @@
 from tkinter import *
-#import tkinter as tk
+#from tkinter import messagebox
 #from Snake.snake import *
-#from SpaceDefenders.spaceDefenders import *
+from SpaceDefenders.spaceDefenders import *
 
 class Menu:
     def __init__(self, window):
@@ -24,13 +24,13 @@ class Menu:
         self.headTitle = Label(self.window, text="Menu de Juegos", 
                     font=("time new roman",20,"bold"),fg="white",bg="#09088B")
         self.headTitle.place(x=245,y=25)
-        self.btnSnake = Button(self.frame,command= self.playSnake() ,text="   Snake   ",fg="black",
+        self.btnSnake = Button(self.frame,command= self.playSnake ,text="   Snake   ",fg="black",
                     bg="white", font=("times new roman", 15))
         self.btnSnake.place(x=147,y=65)
-        self.btnPong = Button(self.frame,command= self.playPong() ,text="   Pong   ",fg="black",
+        self.btnPong = Button(self.frame,command= self.playPong ,text="   Pong   ",fg="black",
                     bg="white", font=("times new roman", 15))
         self.btnPong.place(x=147,y=155)
-        self.btnSpaceDfds= Button(self.frame,command= self.playSpaceDefedrs() ,text="   Space Defenders   ",fg="black",
+        self.btnSpaceDfds= Button(self.frame,command= self.playSpaceDefedrs ,text="   Space Defenders   ",fg="black",
                     bg="white", font=("times new roman", 15))
         self.btnSpaceDfds.place(x=100,y=255)
 
@@ -40,9 +40,10 @@ class Menu:
         pass
         
     def playSpaceDefedrs(self):
-        pass
-
+        #self.window.withdraw()
+        runSpace()
+        
 root = Tk() 
-uiSystem = Menu(root)
+Menu(root)
 root.mainloop()     
         
