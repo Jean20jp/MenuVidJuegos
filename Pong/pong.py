@@ -55,8 +55,9 @@ class PingPong:
         self.ball.color("white")
         self.ball.penup()
         self.ball.goto(0, 0)
-        self.ball.dx = 0.8
-        self.ball.dy = 0.8
+        #velocidad
+        self.ball.dx = 0.3
+        self.ball.dy = 0.3
         self.static = True      
 
     def marcadorInicial(self):
@@ -216,7 +217,7 @@ class PingPong:
         self.registroEventos()
         self.desarrolloJuego()
         
-        
-windows = turtle
-juego = PingPong(windows)
-juego.correr()
+def runPong():        
+    windows = turtle
+    juego = PingPong(windows)
+    juego.correr()

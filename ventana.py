@@ -3,6 +3,7 @@ from typing import Sized
 #from tkinter import messagebox
 from Snake.snake import *
 from SpaceDefenders.spaceDefenders import *
+from Pong.pong import *
 
 class Menu:
     def __init__(self, window):
@@ -72,7 +73,7 @@ class Menu:
         runSnake()
 
     def playPong(self):
-        pass
+        runPong()
         
     def playSpaceDefedrs(self):
         #self.window.withdraw()
