@@ -1,8 +1,6 @@
 import turtle
 import math
 import random
-from tkinter import *
-#from ventana import *
 
 class Sprite(turtle.Turtle):
     def __init__(self):
@@ -18,8 +16,9 @@ class SpaceDefenders:
         self.window.setup(width=600, height=600)
         self.window.title("Space Defenders")
         self.window.bgcolor("black")
-        self.window.bgpic("SpaceDefenders/background.gif")
-        #Detener actualizaciones de pantalla
+    #self.window.bgpic("SpaceDefenders/background.gif")
+    #Detener actualizaciones de pantalla
+    
         self.window.tracer(0)
         self.playerDefns = None
         self.asteroid = None
@@ -27,11 +26,8 @@ class SpaceDefenders:
         self.missiles = []
         self.asteroids = []
         self.createGame()
-        self.btnExit = Button(self.window, command = self.exitGame, text = "SALIR", fg = "black", 
-                        bg = "#D50000", font = ("calibre",16, "bold"))
-        self.btnExit.place(x=530,y=335)
-        
-        
+    
+
     def createGame(self):
         self.ShapeGame()
         self.player()
@@ -116,9 +112,9 @@ class SpaceDefenders:
 
     def exitGame(self):
         self.window.withdraw()
-        root = Tk()
-        Menu(root)
-        root.mainloop()
+        #root = Tk()
+        #Menu(root)
+        #root.mainloop()
 
     #Loop del juego
     def loopGame(self):
@@ -174,3 +170,4 @@ def runSpace():
     root = turtle.Screen()
     SpaceDefenders(root)
     root.mainloop()
+#runSpace()
