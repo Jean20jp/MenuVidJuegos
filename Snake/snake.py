@@ -49,7 +49,7 @@ class Ventana:
         self.food = Sprite()
         self.food.speed(0)
         self.food.shape("circle")
-        self.food.color("red")
+        self.food.color("blue")
         self.food.penup()
         self.food.goto(0, 100)
 
