@@ -29,7 +29,7 @@ class Menu:
         self.widgetsMenu()
     
     def widgetsMenu(self):
-        self.window.config(background="#5B8A72")
+        self.window.config(background="#000")
         self.frameSnake = Frame(self.window,bg="#28527A")
         self.frameSnake.place(x=80,y=100,height=100,width=500)
         self.framePong = Frame(self.window,bg="#28527A")
@@ -39,16 +39,16 @@ class Menu:
         self.frameTitle = Frame(self.window,bg="#28527A")
         self.frameTitle.place(x=185,y=25,height=50,width=300)
         self.headTitle = Label(self.frameTitle,text="Menu de Juegos", 
-                    font=("time new roman",20,"bold"),fg="#5B8A72",bg="#28527A")
+                    font=("time new roman",20,"bold"),fg="#fff",bg="#28527A")
         self.headTitle.place(x=41,y=6)
         self.titleSnake = Label(self.frameSnake,text="SNAKE",
-                    font=("time new roman",22,"bold"),fg="#5B8A72",bg="#28527A")
+                    font=("time new roman",22,"bold"),fg="#fff",bg="#28527A")
         self.titleSnake.place(x=80,y=32)
         self.titlePong = Label(self.framePong,text="PONG",
-                    font=("time new roman",22,"bold"),fg="#5B8A72",bg="#28527A")
+                    font=("time new roman",22,"bold"),fg="#fff",bg="#28527A")
         self.titlePong.place(x=82,y=32)
         self.titleSpaceDfndrs = Label(self.frameSpaceDfs,text="SPACE DEFENDERS",
-                    font=("time new roman",17,"bold"),fg="#5B8A72",bg="#28527A")
+                    font=("time new roman",17,"bold"),fg="#fff",bg="#28527A")
         self.titleSpaceDfndrs.place(x=10,y=35)
         self.btnSnake = Button(self.frameSnake,command=self.playSnake,text="JUGAR",fg="black",
                     bg="#EBEDEF", font=("times new roman",15))
